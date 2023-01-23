@@ -57,6 +57,7 @@ CREATE TABLE orders
 (
     time INTEGER NOT NULL,
     dish_id INTEGER NOT NULL
+    status TEXT NOT NULL
 );
 
 DROP TABLE IF EXISTS tables;

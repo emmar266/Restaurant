@@ -9,3 +9,10 @@ class RegisterForm(FlaskForm):
     surname = StringField("Last name", validators=[InputRequired()])
     submit = SubmitField("Submit")
 """
+class OngoingForm(FlaskForm):
+    index=IntegerField('Order Number: ')
+    submit=SubmitField('Set to ongoing')
+
+class DeleteForm(FlaskForm):
+    index=IntegerField('Order Number: ')
+    submit=SubmitField('Delete meal')

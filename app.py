@@ -108,3 +108,62 @@ def logout():
 def page_not_found(error):
     return render_template("error.html"),404
 """
+
+#general prioirty queue for kitchen staff
+#checks login details to see if your a kitchen staff or manager
+
+@app.route('/kitchen', methods=['GET','POST'])
+#@loginrequired
+def kitchen():
+    
+    db=get_db()
+    #if db.execute('''SELECT * FROM staff
+                         #WHERE (role="chef" OR role="manager") AND staff_id=?''',(session['username'],)).fetchone() is None:
+            #return redirect(url_for('error'))
+    orderlist=db.execute('''SELECT d.name, o.time, d.cook_time, o.status, o.dish_id
+                        FROM orders as o 
+                        JOIN dish as d 
+                        ON o.dish_id=d.dish_id
+                        ORDER BY o.time*d.cook_time DESC;''').fetchall()
+
+    ongoingform=OngoingForm()
+    if ongoingform.validate_on_submit():
+        index=ongoingform.index.data   
+        selectedID=orderlist[index-1]["dish_id"]
+        selectedTime=orderlist[index-1]["time"]
+        db.execute('''UPDATE orders
+                                SET status="ongoing" 
+                                WHERE time==? and status=="unmade" 
+                                and dish_id IN (
+                                            SELECT dish_id
+                                            FROM orders
+            	                            WHERE dish_id==? AND 1 LIMIT 1);''',(selectedTime,selectedID))
+        db.commit()
+        orderlist=db.execute('''SELECT d.name, o.time, d.cook_time, o.status, o.dish_id
+                            FROM orders as o 
+                            JOIN dish as d 
+                            ON o.dish_id=d.dish_id
+                            ORDER BY o.time*d.cook_time DESC;''').fetchall()
+        
+    deleteform=DeleteForm()
+    if deleteform.validate_on_submit():
+        index=deleteform.index.data   
+        selectedID=orderlist[index-1]["dish_id"]
+        selectedTime=orderlist[index-1]["time"]
+        selectedStatus=orderlist[index-1]["status"]
+        db.execute('''DELETE FROM orders
+                                WHERE time==? and status==? 
+                                and dish_id IN (
+                                            SELECT dish_id
+                                            FROM orders
+            	                            WHERE dish_id==? AND 1 LIMIT 1);''',(selectedTime, selectedStatus,selectedID))
+        db.commit()
+        orderlist=db.execute('''SELECT d.name, o.time, d.cook_time, o.status, o.dish_id
+                            FROM orders as o 
+                            JOIN dish as d 
+                            ON o.dish_id=d.dish_id
+                            ORDER BY o.time*d.cook_time DESC;''').fetchall()
+    
+    return render_template('kitchen.html',orderlist=orderlist, ongoingform=ongoingform, deleteform=deleteform)
+
+    

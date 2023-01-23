@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<table>
+    <tr>
+        <th>Dish</th>
+        <th>Time Ordered</th>
+        <th>Cook Time</th>
+        <th>Status</th>
+    </tr>
+    {%for line in orderlist%}
+    <tr>
+        <td>
+            {{line.name}}
+        </td>
+        <td>
+            {{line.time}}
+        </td>
+        <td>
+            {{line.cook_time}}
+        </td>
+        <td>
+            {{line.status}}
+        </td>
+    </tr>
+    {%endfor%}
+</table>
+<form id='ongoingform' action='' method='post' novalidate>
+    {{ ongoingform.hidden_tag() }}
+    {{ongoingform.index.label}}
+    {{ongoingform.index()}}
+    {% for error in ongoingform.index.errors%}
+    <br>
+    {{error}}
+    <br />
+    {%endfor%}
+    {{ongoingform.submit()}}
+</form>
+<form id='deleteform' action='' method='post' novalidate>
+    {{ deleteform.hidden_tag() }}
+    {{deleteform.index.label}}
+    {{deleteform.index()}}
+    {% for error in deleteform.index.errors%}
+    <br>
+    {{error}}
+    <br />
+    {%endfor%}
+    {{deleteform.submit()}}
+</form>
