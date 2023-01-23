@@ -1,0 +1,21 @@
+{% extends 'base.html'%}
+{% block main_content %}
+{% if dishes is not none%}
+    <table>
+        <tr>
+            <th>Name</th>
+            <th>Cost</th>
+            <th>add to cart</th>
+        </tr>
+        {% for dish in dishes%}
+            <tr>
+                <td>{{dish['name']}}</td>
+                <td>{{dish['cost']}}</td>
+                
+            </tr>
+        {% endfor%}
+    
+    </table>
+    {%endif%}
+
+{%endblock%}

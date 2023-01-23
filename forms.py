@@ -9,3 +9,10 @@ class RegisterForm(FlaskForm):
     surname = StringField("Last name", validators=[InputRequired()])
     submit = SubmitField("Submit")
 """
+
+class AddDish(FlaskForm):
+    name = StringField('Dish Name: ', validators=[InputRequired()])
+    cost = DecimalField('Dish Price', validators=[InputRequired()])
+    cookTime= IntegerField('Cook Time', validators=[InputRequired()])
+    dishType = StringField('Dish type:',validators=[InputRequired()])
+    submit = SubmitField('Submit')

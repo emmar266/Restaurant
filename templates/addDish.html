@@ -1,0 +1,34 @@
+{%extends 'base.html'%}
+{% block main_content %}
+    <form action='' method="'POST" novalidate>
+        {{form.hidden_tag()}}
+
+        {{form.name.label}}
+        {{form.name()}}
+        {% for error in form.name.errors %}
+            {{error}}
+        {%endfor%}
+        <br>
+        {{form.cost.label}}
+        {{form.cost()}}
+        {% for error in form.cost.errors %}
+            {{error}}
+        {%endfor%}
+        <br>
+        {{form.cookTime.label}}
+        {{form.cookTime()}}
+        {% for error in form.cookTime.errors %}
+            {{error}}
+        {%endfor%}
+        <br>
+        {{form.dishType.label}}
+        {{form.dishType()}}
+        {% for error in form.dishType.errors %}
+            {{error}}
+        {%endfor%}
+        <br>
+        {{form.submit()}}
+
+    </form>
+    
+{%endblock%}

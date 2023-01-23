@@ -2,6 +2,8 @@ from flask import Flask, render_template, redirect, url_for, session, g, request
 from flask_session import Session
 from werkzeug.security import generate_password_hash, check_password_hash
 #from forms import RegisterForm, LoginForm
+from database import get_db, close_db
+from forms import AddDish
 from functools import wraps
 
 app = Flask(__name__)
@@ -12,6 +14,9 @@ app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
+@app.teardown_appcontext
+def close_db_at_end_of_requests(e=None):
+    close_db(e)
 
 def login_required(view):
     """
@@ -108,3 +113,94 @@ def logout():
 def page_not_found(error):
     return render_template("error.html"),404
 """
+
+#initally i'm gonna just get all dishes to display but i do want to be able to separate it into like starter, main course etc
+@app.route('/menu',methods=['GET'])
+def menu():
+    db = get_db()
+    db.execute("""INSERT INTO dish (name, cost, cook_time, dishType) VALUES(?,?,?,?)""",('X','Y','Z','Y'))
+    db.commit()
+    dishes =db.execute('''SELECT * FROM dish ORDERBY; ''').fetchall()
+    return render_template('dishes.html', dishes=dishes)
+
+#manager only
+#form is not validating - no idea why
+@app.route('/addDish', methods=['GET','POST'])
+def addDish():
+    form = AddDish()
+    print('hello')
+    if form.validate_on_submit():
+        print('plswork')
+        db = get_db()
+        name = form.name.data
+        if db.execute('''SELECT * from dish WHERE name=?''',(name,)).fetchone() is not None:
+            form.name.errors.append("This dish is already in the db")
+            print('issue')
+        else:
+            cost = form.cost.data
+            cookTime = form.cookTime.data
+            dishType = form.dishType.data
+            db.execute("""INSERT INTO dish (name, cost, cook_time, dishType) VALUES(?,?,?,?)""",(name,cost,cookTime,dishType))
+            db.commit()
+            print('ok')
+            return redirect(url_for('update_inventory'))
+    return render_template('addDish.html', form=form)
+
+
+@app.route('/cart')
+def cart():
+    dish=''
+    full = 0
+    if 'cart' not in session:
+        session['cart'] = {}
+    names = {}
+    db = get_db()
+    for dish_id in session['cart']:
+        name = db.execute('''SELECT * FROM dish WHERE id=?;''',(dish_id,)).fetchone()['name']
+        names[dish_id] = name
+        dish = db.execute(''' SELECT * FROM dish WHERE id=?; ''',(dish_id,)).fetchone()
+        cost = db.execute(''' SELECT * FROM dish WHERE id=?''',(dish_id,)).fetchone()['cost']
+        quantity = session['cart'][dish_id]
+        full+= (cost *quantity)
+        full = round(full, 2)
+    return render_template('cart.html', cart=session['cart'], names=names, dish=dish, full=full)
+
+@app.route('/add_to_cart/<int:dish_id>')
+#@login_required
+def add_to_cart(dish_id):
+    if 'cart' not in session:
+        session['cart'] = {} 
+    if dish_id not in session['cart']:
+        session['cart'][dish_id] = 0
+    session['cart'][dish_id]= session['cart'][dish_id] + 1
+    return redirect( url_for('cart') ) 
+
+@app.route('/remove/<int:dish_id>')
+#@login_required
+def remove(dish_id):
+    if dish_id not in session['cart']:
+        session['cart'][dish_id] = 0
+    for dishId in session['cart'].copy():
+        if dish_id == int(dishId):
+            session['cart'].pop(dishId)
+    return redirect(url_for('cart'))
+
+@app.route('/inc_quantity/<int:book_id>')
+@login_required
+def inc_quantity(dish_id):
+    db = get_db()
+    #stock_left = db.execute(''' SELECT * FROM inventory WHERE book_id=?; ''',(book_id,)).fetchone()['stock_left']
+    if dish_id not in session['cart']:
+        session['cart'][dish_id]=0
+    #if session['cart'][book_id] < stock_left:
+    #    session['cart'][book_id] = session['cart'][book_id] +1
+    return redirect(url_for('cart'))
+
+@app.route('/dec_quantity/<int:book_id>')
+@login_required
+def dec_quantity(dish_id):
+    if dish_id not in session['cart']:
+        session['cart'][dish_id]=0
+    if session['cart'][dish_id] >1:
+        session['cart'][dish_id] = session['cart'][dish_id] -1
+    return redirect(url_for('cart'))
