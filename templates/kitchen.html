@@ -7,6 +7,7 @@
         <th>Time Ordered</th>
         <th>Cook Time</th>
         <th>Status</th>
+        <th>Acions</th>
     </tr>
     {%for line in orderlist%}
     <tr>
@@ -22,28 +23,17 @@
         <td>
             {{line.status}}
         </td>
+        <td>
+            {%if line.status=="unmade"%}
+
+            <a href="{{ url_for('kitchenUpdate', dish_id=line.dish_id, time=line.time) }}">Set to ongoing</a>
+
+            {%elif line.status=="ongoing"%}
+            <a href="{{ url_for('kitchenDelete', dish_id=line.dish_id, time=line.time) }}">Delete</a>
+            {%endif%}
+        </td>
     </tr>
     {%endfor%}
 </table>
-<form id='ongoingform' action='' method='post' novalidate>
-    {{ ongoingform.hidden_tag() }}
-    {{ongoingform.index.label}}
-    {{ongoingform.index()}}
-    {% for error in ongoingform.index.errors%}
-    <br>
-    {{error}}
-    <br />
-    {%endfor%}
-    {{ongoingform.submit()}}
-</form>
-<form id='deleteform' action='' method='post' novalidate>
-    {{ deleteform.hidden_tag() }}
-    {{deleteform.index.label}}
-    {{deleteform.index()}}
-    {% for error in deleteform.index.errors%}
-    <br>
-    {{error}}
-    <br />
-    {%endfor%}
-    {{deleteform.submit()}}
-</form>
+
+{%endblock%}

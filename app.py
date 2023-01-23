@@ -1,5 +1,6 @@
 from flask import Flask, render_template, redirect, url_for, session, g, request, make_response
 from flask_session import Session
+from databaseTemporary import get_db, close_db
 from werkzeug.security import generate_password_hash, check_password_hash
 #from forms import RegisterForm, LoginForm
 from functools import wraps
@@ -125,45 +126,46 @@ def kitchen():
                         JOIN dish as d 
                         ON o.dish_id=d.dish_id
                         ORDER BY o.time*d.cook_time DESC;''').fetchall()
+        
+    return render_template('kitchen.html',orderlist=orderlist)
 
-    ongoingform=OngoingForm()
-    if ongoingform.validate_on_submit():
-        index=ongoingform.index.data   
-        selectedID=orderlist[index-1]["dish_id"]
-        selectedTime=orderlist[index-1]["time"]
-        db.execute('''UPDATE orders
+@app.route('/<int:dish_id>,<int:time>/kitchenUpdate', methods=['GET','POST'])
+#@loginrequired
+def kitchenUpdate(dish_id, time):
+    
+    db=get_db()
+    #if db.execute('''SELECT * FROM staff
+                         #WHERE (role="chef" OR role="manager") AND staff_id=?''',(session['username'],)).fetchone() is None:
+            #return redirect(url_for('error'))
+
+    db.execute('''UPDATE orders
                                 SET status="ongoing" 
                                 WHERE time==? and status=="unmade" 
                                 and dish_id IN (
                                             SELECT dish_id
                                             FROM orders
-            	                            WHERE dish_id==? AND 1 LIMIT 1);''',(selectedTime,selectedID))
-        db.commit()
-        orderlist=db.execute('''SELECT d.name, o.time, d.cook_time, o.status, o.dish_id
-                            FROM orders as o 
-                            JOIN dish as d 
-                            ON o.dish_id=d.dish_id
-                            ORDER BY o.time*d.cook_time DESC;''').fetchall()
-        
-    deleteform=DeleteForm()
-    if deleteform.validate_on_submit():
-        index=deleteform.index.data   
-        selectedID=orderlist[index-1]["dish_id"]
-        selectedTime=orderlist[index-1]["time"]
-        selectedStatus=orderlist[index-1]["status"]
-        db.execute('''DELETE FROM orders
-                                WHERE time==? and status==? 
+            	                            WHERE dish_id==? AND 1 LIMIT 1);''',(time, dish_id))
+    db.commit()
+
+    return redirect(url_for('kitchen'))
+
+@app.route('/<int:dish_id>,<int:time>/kitchenDelete', methods=['GET','POST'])
+#@loginrequired
+def kitchenDelete(dish_id, time):
+    
+    db=get_db()
+    #if db.execute('''SELECT * FROM staff
+                         #WHERE (role="chef" OR role="manager") AND staff_id=?''',(session['username'],)).fetchone() is None:
+            #return redirect(url_for('error'))
+
+    db.execute('''DELETE FROM orders
+                                WHERE time==? and status=="ongoing" 
                                 and dish_id IN (
                                             SELECT dish_id
                                             FROM orders
-            	                            WHERE dish_id==? AND 1 LIMIT 1);''',(selectedTime, selectedStatus,selectedID))
-        db.commit()
-        orderlist=db.execute('''SELECT d.name, o.time, d.cook_time, o.status, o.dish_id
-                            FROM orders as o 
-                            JOIN dish as d 
-                            ON o.dish_id=d.dish_id
-                            ORDER BY o.time*d.cook_time DESC;''').fetchall()
-    
-    return render_template('kitchen.html',orderlist=orderlist, ongoingform=ongoingform, deleteform=deleteform)
+            	                            WHERE dish_id==? AND 1 LIMIT 1);''',(time, dish_id))
+    db.commit()
+
+    return redirect(url_for('kitchen'))
 
     
