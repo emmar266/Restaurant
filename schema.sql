@@ -41,6 +41,8 @@ CREATE TABLE dish
     cost INTEGER NOT NULL,
     cook_time Integer NOT NULL,
     dishType TEXT NOT NULL,
+    dishPic TEXT,
+    description TEXT,
     allergies TEXT
 );
 

@@ -1,6 +1,8 @@
 from wtforms import SubmitField, StringField, SelectField, PasswordField, TextAreaField, IntegerField, DateField, DecimalField, RadioField
 from flask_wtf import FlaskForm
 from wtforms.validators import InputRequired, EqualTo, NumberRange
+from flask_wtf.file import FileField, FileAllowed, FileRequired
+
 """
 class RegisterForm(FlaskForm):
     password = PasswordField("Password:", validators=[InputRequired()])
@@ -12,7 +14,9 @@ class RegisterForm(FlaskForm):
 
 class AddDish(FlaskForm):
     name = StringField('Dish Name: ', validators=[InputRequired()])
-    cost = DecimalField('Dish Price', validators=[InputRequired()])
+    cost = IntegerField('Dish Price', validators=[InputRequired()])
     cookTime= IntegerField('Cook Time', validators=[InputRequired()])
     dishType = StringField('Dish type:',validators=[InputRequired()])
+    dishDescription = TextAreaField('Dish Description: ')
+    dishPic = FileField('Upload a picture of dish:',validators=[FileRequired(),FileAllowed(['jpg','png'],'Images Only!')])
     submit = SubmitField('Submit')

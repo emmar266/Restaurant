@@ -1,8 +1,7 @@
 {%extends 'base.html'%}
 {% block main_content %}
-    <form action='' method="'POST" novalidate>
+    <form action='' method="POST" enctype="multipart/form-data" novalidate>
         {{form.hidden_tag()}}
-
         {{form.name.label}}
         {{form.name()}}
         {% for error in form.name.errors %}
@@ -24,6 +23,12 @@
         {{form.dishType.label}}
         {{form.dishType()}}
         {% for error in form.dishType.errors %}
+            {{error}}
+        {%endfor%}
+        <br>
+        {{form.dishPic.label}}
+        {{form.dishPic()}}
+        {%for error in form.dishPic.errors%}
             {{error}}
         {%endfor%}
         <br>
