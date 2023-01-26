@@ -7,6 +7,8 @@ from functools import wraps
 app = Flask(__name__)
 
 app.config["SECRET_KEY"] = "MY_SECRET_KEY"
+app.config['STRIPE_PUBLIC_KEY'] = 'ENTER KEY HERE'
+app.config['STRIPE_PRIVATE_KEY'] = 'ENTER KEY HERE'
 
 app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
@@ -35,6 +37,9 @@ def index():
 def home():     
     return render_template("home.html")
 
+@app.route("/checkout")
+def checkout():
+    print(hi)
 """
 
 @app.route("/register", methods=["GET", "POST"])
