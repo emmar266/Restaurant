@@ -342,6 +342,27 @@ def confirm_code(email,random_code,table):
             return redirect(url_for("change_password", table=table))
     return render_template("password_management/confirm_code.html", form=form, title= "Confirm code")
 
+
+@app.route("/roster_request", methods=["GET", "POST"])
+#@staff_only
+def roster_request():
+    cur = mysql.connection.cursor()
+    form = RosterRequestForm()
+    if form.validate_on_submit():
+        message = form.message.data
+        cur.execute("SELECT * FROM staff where email='cherrylincyl@gmail.com'")#, (g.user,))
+        employee = cur.fetchone()
+        employee = employee["first_name"] + " " + employee["last_name"]
+
+        cur.execute("""INSERT INTO roster_requests (employee, message)
+                            VALUES (%s,%s);""", (employee, message))
+        mysql.connection.commit()
+        cur.close()
+
+        flash ("Request successfully sent!")
+    return render_template("staff/roster_request.html", form=form,title="Roster Request")
+
+
 ##############################################################################################################################################
 ##############################################################################################################################################
 ##############################################################################################################################################
@@ -373,6 +394,17 @@ def get_random_password():
 @app.route("/manager")
 def manager():
     return render_template("manager/dashboard.html")
+
+#@manager_only
+@app.route("/roster_approve")
+def roster_approve():
+    #once button clicked, then update db to approved
+    #automate a notification sent to the employee
+
+#@manager_only
+@app.route("/roster_reject")
+def roster_reject():
+    # send a message as to why its a no and update db
 
 # View and manage all employees
 #@manager_only
