@@ -3,12 +3,12 @@ from flask_session import Session
 from werkzeug.security import generate_password_hash, check_password_hash
 #from forms import RegisterForm, LoginForm
 from database import get_db, close_db
-from forms import AddDish
+from forms import AddDish, UserPic
 from functools import wraps
 import os
 from werkzeug.utils import secure_filename
 
-UPLOAD_FOLDER = "static\pictures"
+UPLOAD_FOLDER = "static"
 
 app = Flask(__name__)
 
@@ -135,11 +135,18 @@ def page_not_found(error):
 def menu():
     db = get_db()
     dishes =db.execute('''SELECT * FROM dish ORDERBY; ''').fetchall()
-    return render_template('dishes.html', dishes=dishes)
+    #want to order this so that we display by dishtype
+    starters = db.execute(""" SELECT * FROM dish WHERE dishType='starter' """).fetchall()
+    mainCourse = db.execute(""" SELECT * FROM dish WHERE dishType="main" """).fetchall()
+    dessert= db.execute(""" SELECT * FROM dish WHERE dishType='dessert' """).fetchall()
+    drink= db.execute(""" SELECT * FROM dish WHERE dishType='drink'""").fetchall()
+    side = db.execute(""" SELECT * FROM dish WHERE dishType='side'""").fetchall()
+    return render_template('dishes.html', dishes=dishes, starters=starters, mainCourse=mainCourse,dessert=dessert, drink=drink,side=side)
 
 
 #manager only
-#form is not validating - no idea why
+#should add instead of a text box for dishtype like a drop down with only a couple of options
+
 @app.route('/addDish', methods=['GET','POST'])
 def addDish():
     form = AddDish()
@@ -151,10 +158,11 @@ def addDish():
         else:
             cost = form.cost.data
             cookTime = form.cookTime.data
-            dishType = form.dishType.data
+            dishType = (form.dishType.data).lower()
             dishDescription = form.dishDescription.data
             dishPic = form.dishPic.data
             filename = secure_filename(dishPic.filename)
+            print(filename)
             dishPic.save(os.path.join(app.config['UPLOAD_FOLDER'],filename))
             if dishDescription is not None:
                 db.execute("""INSERT INTO dish (name, cost, cook_time, dishType,description,dishPic) VALUES(?,?,?,?,?,?)""",(name,cost,cookTime,dishType,dishDescription,filename))
@@ -224,6 +232,48 @@ def dec_quantity(dish_id):
     if session['cart'][dish_id] >1:
         session['cart'][dish_id] = session['cart'][dish_id] -1
     return redirect(url_for('cart'))
+
+
+#question does this need to be specific to user?? or is it already
+@app.route('/checkout', methods=['GET','POST'])
+def checkout():
+    db= get_db()
+    #need table number to be inputed here
+    
+
+
+@app.route('/user')
+#@login_required
+def user():
+    username = session['username']
+    db = get_db()
+    message = ''
+    if db.execute(""" SELECT * FROM users WHERE username=?""",(username,)).fetchone()['profile_pic'] is not None:
+        error = 'No profile picture yet'
+    else:   
+        image=db.execute(""" SELECT * FROM users WHERE username=?""",(username,)).fetchone()['profile_pic']
+    if db.execute("""SELECT * FROM transactions WHERE username=?;""",(username,)).fetchall() is not None:
+        message = "You've made no transactions yet"
+    else:
+        dish = db.execute(""" SELECT * FROM dishes;""").fetchall()
+        transactionHistory = db.execute(""" SELECT * FROM transactions WHERE username=? """,(username,)).fetchall()
+    return render_template('users.html',image=image)
+
+
+@app.route('/user_pic', methods=['GET','POST'])
+#@login_required
+def user_pic():
+    username = session['username']
+    db = get_db()
+    form = UserPic()
+    if form.validate_on_submit():
+        profile_pic = form.profile_pic.data
+        filename = secure_filename(profile_pic.filename)
+        profile_pic.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        db.execute(''' UPDATE users SET profile_pic=? WHERE username=?; ''' ,(filename,username))
+        db.commit()
+        return redirect(url_for('user'))
+    return render_template('profile_pic.html', form=form)
 
 #to continue with functional cart i need to have customers up and running
 #need to create stock levels 

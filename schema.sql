@@ -93,3 +93,21 @@ CREATE TABLE stats
     tip INTEGER NOT NULL,
     tables INTEGER NOT NULL
 );
+DROP TABLE IF EXISTS users;
+
+CREATE TABLE users 
+(
+    profile_pic TEXT,
+    username TEXT NOT NULL,
+    user_id INTEGER PRIMARY KEY AUTOINCREMENT
+);
+DROP TABLE IF EXISTS transactions;
+CREATE TABLE transactions
+(
+    transaction_id INTEGER PRIMARY KEY NOT NULL,
+    date DATE NOT NULL,
+    username TEXT NOT NULL,
+    book_id INTEGER NOT NULL,
+    cost INTEGER NOT NULL,
+    quantity INTEGER NOT NULL
+);

@@ -20,3 +20,7 @@ class AddDish(FlaskForm):
     dishDescription = TextAreaField('Dish Description: ')
     dishPic = FileField('Upload a picture of dish:',validators=[FileRequired(),FileAllowed(['jpg','png'],'Images Only!')])
     submit = SubmitField('Submit')
+
+class UserPic(FlaskForm):
+    profile_pic = FileField('Upload a cover', validators=[FileRequired(),FileAllowed(['jpg','png'],'Images Only!')])
+    submit = SubmitField('Enter')

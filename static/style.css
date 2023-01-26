@@ -132,3 +132,7 @@ footer {
 table + table {
     margin-top: 3em;
 }
+.imgbro {
+    width: 6em;
+    height: 8em;
+}
