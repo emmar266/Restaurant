@@ -1,7 +1,7 @@
 from flask import Flask, render_template, redirect, url_for, session, g, request, make_response, flash
 from flask_session import Session
 from werkzeug.security import generate_password_hash, check_password_hash
-from forms import RegistrationForm, LoginForm, ContactForm, ReplyForm, EmployeeForm, ResetPasswordForm, NewPasswordForm, CodeForm
+from forms import RegistrationForm, LoginForm, ContactForm, ReplyForm, EmployeeForm, ResetPasswordForm, NewPasswordForm, CodeForm, RosterRequestForm
 from functools import wraps
 from flask_mysqldb import MySQL 
 from flask_mail import Mail, Message
@@ -29,7 +29,7 @@ app.config['MAIL_USE_SSL'] = True
 mail.init_app(app)
 
 app.config['MYSQL_USER'] = 'root' # someone's deets
-app.config['MYSQL_PASSWORD'] = '' # someone's deets
+app.config['MYSQL_PASSWORD'] = 'Cherry0417!' # someone's deets
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_DB'] = 'world' # someone's deets
 app.config['MYSQL_CURSORCLASS']= 'DictCursor'
@@ -38,7 +38,7 @@ mysql = MySQL(app)
 
 @app.before_request
 def logged_in():
-    g.user = session.get("username", None)
+    g.user = "cherry" #session.get("username", None)
     g.access = session.get("access_level", None)
 
 def login_required(view):
@@ -139,7 +139,7 @@ def registration():
                         VALUES (%s,%s,%s,%s,%s);""", (email, first_name, last_name, generate_password_hash(password), code))
             mysql.connection.commit()
             flash("Successful Registration! Please login now")
-            return redirect( url_for("login"))
+            return redirect( url_for("customer_login"))
 
             #response = make_response(redirect("auto_login_check"))
             #response.set_cookie("email",email,max_age=(60*60*24))
@@ -167,7 +167,7 @@ def customer_login():
             form.password.errors.append("Incorrect password")
             session['counter'] = session.get('counter') + 1
             if session.get('counter')==3:
-                flash(Markup('Oh no, are you having trouble logging in? Sucks to be you'))
+                flash(Markup('Oh no, are you having trouble logging in? Sucks to be you')) # reset password link need to go here
                 session.pop('counter', None)
         else:
             session.clear()
@@ -203,7 +203,7 @@ def staff_login():
             form.password.errors.append("Incorrect password")
             session['counter'] = session.get('counter') + 1
             if session.get('counter')==3:
-                flash(Markup('Oh no, are you having trouble logging in? Sucks to be you'))
+                flash(Markup('Oh no, are you having trouble logging in? Sucks to be you')) # reset password link need to go here
                 session.pop('counter', None)
         else:
             session.clear()
@@ -393,7 +393,6 @@ def roster_request():
         flash ("Request successfully sent!")
     return render_template("staff/roster_request.html", form=form,title="Roster Request")
 
-
 ##############################################################################################################################################
 ##############################################################################################################################################
 ##############################################################################################################################################
@@ -421,10 +420,25 @@ def get_random_password():
     return password
 
 # Manager account
-@manager_only
+#@manager_only
 @app.route("/manager")
 def manager():
-    return render_template("manager/dashboard.html")
+    cur = mysql.connection.cursor()
+    date = datetime.now().date()
+
+    cur.execute("SELECT * FROM user_analytics")
+    user_analytics = cur.fetchone()
+    cur.execute("SELECT * FROM sales_analytics")
+    sales_analytics = cur.fetchone()
+
+    cur.execute("SELECT count(*) FROM user_queries where date(todays_date) = %s", (date,))
+    query_count = cur.fetchone()
+
+    cur.execute("SELECT * FROM roster_requests")
+    requests = cur.fetchall()
+
+    cur.close()
+    return render_template("manager/dashboard.html", requests=requests, user_analytics=user_analytics, sales_analytics=sales_analytics, query_count=query_count, title="Dashboard")
 
 #@manager_only
 @app.route("/roster_approve")
@@ -463,13 +477,13 @@ def add_new_employee():
         cur.execute("""INSERT INTO staff (email, role, access_level, first_name, last_name, password)
                             VALUES (%s,%s,%s,%s,%s,%s);""", (email, role, access_level, first_name, last_name, generate_password_hash(password)))
         mysql.connection.commit()
-        
+        '''
         # Notify employee's email about their new account
         message = "Please sign into your account with your email and password:" + password
         msg = Message("Welcome on board! We're happy you joined us.", sender='no.reply.please.and.thank.you@gmail.com', recipients=[email])   
         msg.body = f"""{message}"""
         mail.send(msg)
-        
+        '''
         flash ("New employee successfully added!")
         return redirect(url_for("view_all_employees"))
     return render_template("manager/new_staff_form.html", form=form, title="Add New Employee")   
@@ -516,12 +530,5 @@ def reply_email(id):
         flash("Message sent successfully.")
     return render_template("manager/reply_email.html",form=form, title="Reply", query=query)
 
-
-
-
-
-
-
-
-if __name__ == '__main__':
-    app.run(debug=True)
+if __name__ == "__main__":
+    app.run()
