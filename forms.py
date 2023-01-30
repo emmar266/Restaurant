@@ -1,11 +1,13 @@
-from wtforms import SubmitField, StringField, SelectField, PasswordField, TextAreaField, IntegerField, DateField, DecimalField, RadioField
+from wtforms import SubmitField, StringField, SelectField, PasswordField, TextAreaField, IntegerField, DateField, DecimalField, RadioField, validators
 from flask_wtf import FlaskForm
-from wtforms.validators import InputRequired, EqualTo, NumberRange
-"""
-class RegisterForm(FlaskForm):
+from wtforms.validators import InputRequired, EqualTo, NumberRange, Email
+from wtforms.widgets import TextArea
+
+
+class RegistrationForm(FlaskForm):
+    email = StringField("Email Address", [validators.Length(min=6, max=100), Email()])
     password = PasswordField("Password:", validators=[InputRequired()])
     confirm = PasswordField("Confirm Password:", validators=[InputRequired(), EqualTo("password")])
     first_name = StringField("First name", validators=[InputRequired()])
-    surname = StringField("Last name", validators=[InputRequired()])
+    last_name = StringField("Last name", validators=[InputRequired()])
     submit = SubmitField("Submit")
-"""

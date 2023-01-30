@@ -31,11 +31,11 @@ e0007 = Employee("7", 9, 17)
 e0008 = Employee("8", 9, 18)
 e0009 = Employee("9", 9, 11)
 
+breakList = []
 roster = [e0001, e0002, e0003, e0004, e0005, e0006, e0007, e0008, e0009]
 roster.sort(key=lambda x: x.start_time) # Sort the Employees based on who started first
 available_breaks = [10.00, 11.00, 12.00, 13.00, 14.00, 15.00, 16.00, 20.00, 21.00]
 def calculateEmployeeBreaks(roster):
-    breakList = []
     i = 0
     for employee in roster:
         if (employee.break_length > 0): # If the employee has a break
@@ -48,4 +48,17 @@ def calculateEmployeeBreaks(roster):
 
     print(breakList)
 
-calculateEmployeeBreaks(roster)
+def newCalcEmployeeBreaks(roster):
+    i = 0
+    for employee in roster:
+        if (employee.break_length > 0):
+            while i < len(available_breaks):
+                if i >= len(available_breaks):
+                    i = 0
+                if (available_breaks[i] < (employee.end_time - employee.break_length) and 
+                (available_breaks[i] > employee.start_time)):
+                    breakList.append({'name' : employee.name, 'time' : 'test'})
+                i+=1
+    print(breakList)
+
+newCalcEmployeeBreaks(roster)
