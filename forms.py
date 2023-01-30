@@ -5,7 +5,7 @@ from wtforms.widgets import TextArea
 
 
 class RegistrationForm(FlaskForm):
-    email = StringField("Email Address", [validators.Length(min=6, max=100), Email()])
+    email = StringField("Email Address", [InputRequired(), validators.Length(min=6, max=100), Email(message="Please enter a valid Email Address!")])
     password = PasswordField("Password:", validators=[InputRequired()])
     confirm = PasswordField("Confirm Password:", validators=[InputRequired(), EqualTo("password")])
     first_name = StringField("First name", validators=[InputRequired()])
