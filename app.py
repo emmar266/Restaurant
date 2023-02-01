@@ -1,5 +1,8 @@
 from flask import Flask, render_template, redirect, url_for, session, g, request, make_response, flash
 from flask_session import Session
+from werkzeug.security import generate_password_hash, check_password_hash
+#from forms import RegisterForm, LoginForm
+from functools import wraps
 from flask_mysqldb import MySQL 
 
 app = Flask(__name__)
