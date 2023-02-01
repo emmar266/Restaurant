@@ -6,10 +6,13 @@
         <th>Dish</th>
         <th>Time Ordered</th>
         <th>Cook Time</th>
+        <th>Table No.</th>
+        <th>Notes</th>
         <th>Status</th>
-        <th>Acions</th>
+        <th>Actions</th>
     </tr>
     {%for line in orderlist%}
+    {%if line.status!="sent out"%}
     <tr>
         <td>
             {{line.name}}
@@ -21,6 +24,14 @@
             {{line.cook_time}}
         </td>
         <td>
+            {{line.tableNo}}
+        </td>
+        <td>
+            {%if line.notes%}
+            {{line.notes}}
+            {%endif%}
+        </td>
+        <td>
             {{line.status}}
         </td>
         <td>
@@ -29,10 +40,11 @@
             <a href="{{ url_for('kitchenUpdate', dish_id=line.dish_id, time=line.time) }}">Set to ongoing</a>
 
             {%elif line.status=="ongoing"%}
-            <a href="{{ url_for('kitchenDelete', dish_id=line.dish_id, time=line.time) }}">Delete</a>
+            <a href="{{ url_for('kitchenSentOut', dish_id=line.dish_id, time=line.time) }}">Send Out</a>
             {%endif%}
         </td>
     </tr>
+    {%endif%}
     {%endfor%}
 </table>
 
