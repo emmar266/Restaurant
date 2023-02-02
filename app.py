@@ -30,10 +30,10 @@ app.config['MAIL_USE_TLS'] = False
 app.config['MAIL_USE_SSL'] = True
 mail.init_app(app)
 
-app.config['MYSQL_USER'] = 'root' # someone's deets
-app.config['MYSQL_PASSWORD'] = '' # someone's deets
-app.config['MYSQL_HOST'] = '127.0.0.1'
-app.config['MYSQL_DB'] = 'sys' # someone's deets
+app.config['MYSQL_USER'] = 'tl15' # someone's deets
+app.config['MYSQL_PASSWORD'] = 'kupho' # someone's deets
+app.config['MYSQL_HOST'] = 'cs1.ucc.ie'
+app.config['MYSQL_DB'] = 'cs2208_tl15' # someone's deets
 app.config['MYSQL_CURSORCLASS']= 'DictCursor'
 
 mysql = MySQL(app)
@@ -769,7 +769,7 @@ def manager():
     cur.execute("SELECT * FROM sales_analytics")
     sales_analytics = cur.fetchone()
 
-    cur.execute("SELECT count(*) FROM user_queries where date(todays_date) = %s", (date,))
+    cur.execute("SELECT count(*) FROM user_queries WHERE date_received= %s", (date,))
     query_count = cur.fetchone()
 
     cur.execute("SELECT * FROM roster_requests WHERE status = 'Pending'")
