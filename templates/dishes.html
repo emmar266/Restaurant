@@ -12,7 +12,8 @@
                 <td><img src="{{url_for('static',filename=dish['dishPic'])}}" class='imgbro'></td>
                 <td>{{dish['name']}}</td>
                 <td>{{dish['cost']}}</td>
-                <td><a href="{{url_for('add_to_cart', dish_id=dish['dish_id'])}}">add to cart</a></td>
+                <td><a href="{{url_for('dish', dish_id=dish['dish_id'])}}">Go to dish</a></td>
+                <td><a href="{{url_for('add_default_meal', dish_id=dish['dish_id'])}}">add to cart</a></td>
             </tr>
         {% endfor%}
 

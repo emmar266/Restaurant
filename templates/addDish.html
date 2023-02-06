@@ -32,6 +32,24 @@
             {{error}}
         {%endfor%}
         <br>
+        {{form.dishDescription.label}}
+        {{form.dishDescription()}}
+        {%for error in form.dishDescription.errors%}
+            {{error}}
+        {%endfor%}
+        <br>
+        {{form.ingredients.label}}
+        {{form.ingredients()}}
+        {%for error in form.ingredients.errors%}
+            {{error}}
+        {%endfor%}
+        <br>
+        {{form.allergins.label}}
+        {{form.allergins()}}
+        {%for error in form.allergins.errors%}
+            {{error}}
+        {%endfor%}
+        <BR>
         {{form.submit()}}
 
     </form>

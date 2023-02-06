@@ -2,8 +2,23 @@ DROP TABLE IF EXISTS staff;
 
 CREATE TABLE staff 
 (
-    staff_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    staff_id INTEGER PRIMARY KEY AUTO_INCREMENT,
+    email TEXT NOT NULL,
+    code TEXT,
+    access_level TEXT NOT NULL,
     role TEXT NOT NULL,
+    first_name TEXT NOT NULL,
+    last_name TEXT NOT NULL,
+    password TEXT NOT NULL
+);
+
+DROP TABLE IF EXISTS customer;
+
+CREATE TABLE customer
+(
+    customer_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    email TEXT NOT NULL,
+    code TEXT,
     first_name TEXT NOT NULL,
     last_name TEXT NOT NULL,
     password TEXT NOT NULL
@@ -54,13 +69,23 @@ CREATE TABLE dish_ingredient
     dish_id INTEGER NOT NULL
 );
 
+
+
 DROP TABLE IF EXISTS orders;
 
 CREATE TABLE orders
 (
     time INTEGER NOT NULL,
-    dish_id INTEGER NOT NULL
+    dish_id INTEGER NOT NULL,
+    changes TEXT NOT NULL
 );
+CREATE TABLE modifications
+(
+    modification_id INTEGER PRIMARY KEY AUTO_INCREMENT,
+    dish_id INTEGER NOT NULL,
+    changes TEXT NOT NULL,
+    user TEXT NOT NULL
+)
 
 DROP TABLE IF EXISTS tables;
 
@@ -110,4 +135,16 @@ CREATE TABLE transactions
     book_id INTEGER NOT NULL,
     cost INTEGER NOT NULL,
     quantity INTEGER NOT NULL
+);
+
+DROP TABLE IF EXISTS user_queries;
+
+CREATE TABLE user_queries
+(
+    query_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    email TEXT NOT NULL,
+    subject TEXT NOT NULL,
+    name TEXT NOT NULL,
+    message TEXT NOT NULL,
+    date DATE NOT NULL
 );
