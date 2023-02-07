@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'layouts/base.html' %}
 {% block content %}
 <div class="pcoded-wrapper">
     <div class="pcoded-content">
@@ -7,7 +7,6 @@
                 <div class="card">
                     <div class="card-header">
                         <h5>Orders</h5>
-                        <p class="text-right"> <a href="{{ url_for('add_new_employee') }}"> Add new employee </a> </p>
                     </div>
                     <div class="card-block table-border-style">
                         <div class="table-responsive">
