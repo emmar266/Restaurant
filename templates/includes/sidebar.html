@@ -20,45 +20,6 @@
                     <a href="/" class="nav-link "><span class="pcoded-micon"><i class="feather icon-home"></i></span><span
                             class="pcoded-mtext">Dashboard</span></a>
                 </li>
-
-                <li class="nav-item pcoded-menu-caption">
-                    <label>Management Tools</label>
-                </li>
-
-                 <li data-username="Authentication Sign up Sign in reset password Change password Personal information profile settings map form subscribe"
-                    class="nav-item pcoded-hasmenu">
-                    <a href="javascript:" class="nav-link "><span class="pcoded-micon"><i class="feather icon-lock"></i></span><span
-                            class="pcoded-mtext">Roster</span></a>
-                    <ul class="pcoded-submenu">
-                        <!-- I want the view roster and generate random functionalities (ask ben about those webpages) as dropdown options -->
-                        <li class=""><a href="/roster_timetable" class="" target="_blank">View Roster</a></li>
-                        <li class=""><a href="/generate_roster" class="" target="_blank">Generate</a></li>
-                    </ul>
-                </li>
-
-                <li data-username="Authentication Sign up Sign in reset password Change password Personal information profile settings map form subscribe"
-                    class="nav-item pcoded-hasmenu">
-                    <a href="javascript:" class="nav-link "><span class="pcoded-micon"><i class="feather icon-lock"></i></span><span
-                            class="pcoded-mtext">Staff</span></a>
-                    <ul class="pcoded-submenu">
-                        <!-- I want view_all_employees and add_new_employee as dropdown options -->
-                        <li class=""><a href="/view_all_employees" class="" target="_blank">Employee List</a></li>
-                        <li class=""><a href="/add_new_employee" class="" target="_blank">Add Employee</a></li>
-                    </ul>
-                </li>
-
-                <li data-username="Authentication Sign up Sign in reset password Change password Personal information profile settings map form subscribe"
-                    class="nav-item pcoded-hasmenu">
-                    <a href="javascript:" class="nav-link "><span class="pcoded-micon"><i class="feather icon-lock"></i></span><span
-                            class="pcoded-mtext">Inventory</span></a>
-                    <ul class="pcoded-submenu">
-                        <!-- I want view_inventory dropdown options -->
-                        <li class=""><a href="/view_inventory" class="" target="_blank">View Inventory</a></li>
-                        <li class=""><a href="/add_inventory" class="" target="_blank">Add Inventory</a></li>
-                    </ul>
-                </li>
-
-
                 <li class="nav-item pcoded-menu-caption">
                     <label>Account</label>
                 </li>
@@ -86,6 +47,46 @@
                     <a href="{{ url_for('logout') }}" class="nav-link">
                         <span class="pcoded-micon"><i class="feather icon-power"></i></span><span class="pcoded-mtext">Logout</span>
                     </a>
+                </li>
+
+
+                <li class="nav-item pcoded-menu-caption">
+                    <label>Management Tools</label>
+                </li>
+
+                 <li data-username="Authentication Sign up Sign in reset password Change password Personal information profile settings map form subscribe"
+                    class="nav-item pcoded-hasmenu">
+                    <a href="javascript:" class="nav-link "><span class="pcoded-micon"><i class="feather icon-lock"></i></span><span
+                            class="pcoded-mtext">Roster</span></a>
+                    <ul class="pcoded-submenu">
+                        <!-- I want the view roster and generate random functionalities (ask ben about those webpages) as dropdown options -->
+                        <li class=""><a href="/roster_timetable" class="" target="_blank">View Roster</a></li>
+                        <li class=""><a href="/generate_roster" class="" target="_blank">Generate</a></li>
+                        <li class=""><a href="/add_to_roster_timetable" class="" target="_blank">Add to Timetable</a></li>
+                        <li class=""><a href="/generate_roster" class="" target="_blank">View Break Timetable</a></li>
+                    </ul>
+                </li>
+
+                <li data-username="Authentication Sign up Sign in reset password Change password Personal information profile settings map form subscribe"
+                    class="nav-item pcoded-hasmenu">
+                    <a href="javascript:" class="nav-link "><span class="pcoded-micon"><i class="feather icon-lock"></i></span><span
+                            class="pcoded-mtext">Staff</span></a>
+                    <ul class="pcoded-submenu">
+                        <!-- I want view_all_employees and add_new_employee as dropdown options -->
+                        <li class=""><a href="/view_all_employees" class="" target="_blank">Employee List</a></li>
+                        <li class=""><a href="/add_new_employee" class="" target="_blank">Add Employee</a></li>
+                    </ul>
+                </li>
+
+                <li data-username="Authentication Sign up Sign in reset password Change password Personal information profile settings map form subscribe"
+                    class="nav-item pcoded-hasmenu">
+                    <a href="javascript:" class="nav-link "><span class="pcoded-micon"><i class="feather icon-lock"></i></span><span
+                            class="pcoded-mtext">Inventory</span></a>
+                    <ul class="pcoded-submenu">
+                        <!-- I want view_inventory dropdown options -->
+                        <li class=""><a href="/view_inventory" class="" target="_blank">View Inventory</a></li>
+                        <li class=""><a href="/add_inventory" class="" target="_blank">Add Inventory</a></li>
+                    </ul>
                 </li>
             </ul>
         </div>
