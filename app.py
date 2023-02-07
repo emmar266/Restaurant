@@ -627,21 +627,12 @@ def confirm_code(email, table):
 @app.route('/kitchen', methods=['GET','POST'])
 def kitchen():
     cur = mysql.connection.cursor()
-    cur.execute('''SELECT d.name, o.time, d.cook_time, o.tableNo, o.notes, o.status, o.dish_id
+    cur.execute('''SELECT d.name, o.time, d.cook_time, o.tableNo, o.status, o.dish_id
                     FROM orders as o 
                     JOIN dish as d 
-                    ON o.dish_id=d.dish_id
-                    ORDER BY o.notes='priority' DESC,
-                            o.time,
-                            o.time*d.cook_time DESC,
-                            o.tableNo,  
-                            d.cook_time DESC,
-                            d.category='starter',
-                            d.category='main',
-                            d.category='side',
-                            d.category='dessert';''')
+                    ON o.dish_id=d.dish_id;''')
     orderlist=cur.fetchall()
-
+    cur.close()
     return render_template('kitchen.html',orderlist=orderlist)
 
 @app.route('/<int:dish_id>,<int:time>/kitchenUpdate', methods=['GET','POST'])

@@ -1,51 +1,68 @@
 {% extends 'base.html' %}
 {% block content %}
+<div class="pcoded-wrapper">
+    <div class="pcoded-content">
+        <div class="pcoded-inner-content">
+            <div class="col-xl-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Orders</h5>
+                        <p class="text-right"> <a href="{{ url_for('add_new_employee') }}"> Add new employee </a> </p>
+                    </div>
+                    <div class="card-block table-border-style">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <tr>
+                                    <th>Dish</th>
+                                    <th>Time Ordered</th>
+                                    <th>Cook Time</th>
+                                    <th>Table No.</th>
+                                    <th>Notes</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                                {%for line in orderlist%}
+                                {%if line.status!="sent out"%}
+                                <tr>
+                                    <td>
+                                        {{line.name}}
+                                    </td>
+                                    <td>
+                                        {{line.time}}
+                                    </td>
+                                    <td>
+                                        {{line.cook_time}}
+                                    </td>
+                                    <td>
+                                        {{line.tableNo}}
+                                    </td>
+                                    <td>
+                                        {%if line.notes%}
+                                        {{line.notes}}
+                                        {%endif%}
+                                    </td>
+                                    <td>
+                                        {{line.status}}
+                                    </td>
+                                    <td>
+                                        {%if line.status=="unmade"%}
 
-<table>
-    <tr>
-        <th>Dish</th>
-        <th>Time Ordered</th>
-        <th>Cook Time</th>
-        <th>Table No.</th>
-        <th>Notes</th>
-        <th>Status</th>
-        <th>Actions</th>
-    </tr>
-    {%for line in orderlist%}
-    {%if line.status!="sent out"%}
-    <tr>
-        <td>
-            {{line.name}}
-        </td>
-        <td>
-            {{line.time}}
-        </td>
-        <td>
-            {{line.cook_time}}
-        </td>
-        <td>
-            {{line.tableNo}}
-        </td>
-        <td>
-            {%if line.notes%}
-            {{line.notes}}
-            {%endif%}
-        </td>
-        <td>
-            {{line.status}}
-        </td>
-        <td>
-            {%if line.status=="unmade"%}
+                                        <a href="{{ url_for('kitchenUpdate', dish_id=line.dish_id, time=line.time) }}">Set to ongoing</a>
 
-            <a href="{{ url_for('kitchenUpdate', dish_id=line.dish_id, time=line.time) }}">Set to ongoing</a>
-
-            {%elif line.status=="ongoing"%}
-            <a href="{{ url_for('kitchenSentOut', dish_id=line.dish_id, time=line.time) }}">Send Out</a>
-            {%endif%}
-        </td>
-    </tr>
-    {%endif%}
-    {%endfor%}
-</table>
+                                        {%elif line.status=="ongoing"%}
+                                        <a href="{{ url_for('kitchenSentOut', dish_id=line.dish_id, time=line.time) }}">Send Out</a>
+                                        {%endif%}
+                                    </td>
+                                </tr>
+                                {%endif%}
+                                {%endfor%}
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 {%endblock%}
