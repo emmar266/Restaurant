@@ -636,7 +636,6 @@ def kitchen():
     return render_template('kitchen.html',orderlist=orderlist)
 
 @app.route('/<int:dish_id>,<int:time>/kitchenUpdate', methods=['GET','POST'])
-
 def kitchenUpdate(dish_id, time):
     cur = mysql.connection.cursor()
     cur.execute('''UPDATE orders

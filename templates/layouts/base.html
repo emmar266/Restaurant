@@ -32,6 +32,9 @@
 </head>
 
 <body>
+    {% include 'includes/sidebar.html' %}
+
+    {% include 'includes/navigation.html' %}
     <nav>
         <a href="{{ url_for('index') }}">Home</a>
     </nav>
@@ -56,6 +59,7 @@
         </div>
     </div>
     <!-- [ Pre-loader ] End -->
+
 
     {% block content %}{% endblock content %}
 
