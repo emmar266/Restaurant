@@ -90,7 +90,17 @@ CREATE TABLE ingredient
 (   
     ingredient_id INTEGER PRIMARY KEY AUTO_INCREMENT,
     name TEXT NOT NULL,
-    quantity INTEGER NOT NULL
+    quantity INTEGER NOT NULL,
+    expiry DATETIME
+);
+
+DROP TABLE IF EXISTS ingredient_shop;
+
+CREATE TABLE ingredient_shop
+(   
+    ingredient_id INTEGER PRIMARY KEY AUTO_INCREMENT,
+    name TEXT NOT NULL,
+    shelfLife INTEGER NOT NULL
 );
 
 INSERT INTO ingredient

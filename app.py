@@ -1,7 +1,7 @@
 from flask import Flask, render_template, redirect, url_for, session, g, request, make_response, flash, Markup
 from flask_session import Session
 from werkzeug.security import generate_password_hash, check_password_hash
-from forms import RegistrationForm, LoginForm, ContactForm, ReplyForm, EmployeeForm, ResetPasswordForm, NewPasswordForm, CodeForm, TableForm, AddToRosterForm, RosterRequestForm, ProfileForm, RejectRosterRequestForm
+from forms import RegistrationForm, LoginForm, ContactForm, ReplyForm, EmployeeForm, ResetPasswordForm, NewPasswordForm, CodeForm, TableForm, AddToRosterForm, RosterRequestForm, ProfileForm, RejectRosterRequestForm, OrderIngredientsForm, NewIngredientForm
 from functools import wraps
 from flask_mysqldb import MySQL 
 from generate_roster import Roster
@@ -905,6 +905,39 @@ def view_inventory():
     inventory = cur.fetchall()
     cur.close()
     return render_template("manager/inventory.html", inventory=inventory, title="Inventory List")
+
+@app.route("/order_inventory")
+def order_inventory():
+    cur = mysql.connection.cursor()
+    form = OrderIngredientsForm()
+    if form.validate_on_submit():
+        ingredient_name = form.ingredient_name.data
+        quantity = form.quantity.data
+        ingredient_id = cur.execute("SELECT ingredient_id FROM ingredient_shop WHERE name=%s", (ingredient_name))
+        expiry = cur.execute("SELECT shelfLife FROM ingredient_shop WHERE name=%s", (ingredient_name,))
+        
+        cur.execute("""INSERT INTO ingredient (ingredient_id, name, quantity, expiry) 
+                    VALUES (%s, %s, %s,%s);""",(ingredient_id, ingredient_name, quantity, expiry))
+        mysql.connection.commit()
+        flash ("Order Successfully Executed")
+        cur.close()
+        return redirect(url_for("view_inventory"))
+    return render_template("manager/order_inventory.html", form=form, title="Order Ingredients")
+
+@app.route("/add_to_inventory_shop")
+def add_to_inventory_shop():
+    cur = mysql.connection.cursor()
+    form = NewIngredientForm()
+    if form.validate_on_submit():
+        ingredient_name = form.ingredient_name.data
+        expiry = form.expiry.data
+        
+        cur.execute("""INSERT INTO ingredient_shop (name, expiry) 
+                    VALUES (%s, %s,);""",(ingredient_name, expiry))
+        mysql.connection.commit()
+        flash ("Added to Ingredient Shop")
+        cur.close()
+    return render_template("manager/add_to_inventory_shop.html", form=form, title="Add to Ingredient Shop")
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -87,3 +87,13 @@ class RosterRequestForm(FlaskForm):
 class RejectRosterRequestForm(FlaskForm):
     response = TextAreaField("Reason for rejection", widget=TextArea(), validators=[InputRequired()])
     submit = SubmitField("Confirm")
+
+class OrderIngredientsForm(FlaskForm):
+    ingredient_name = StringField("Ingredient", validators=[InputRequired("Please enter an Ingredient")])
+    quantity = IntegerField("Quantity")
+    submit = SubmitField("Submit Order")
+
+class NewIngredientForm(FlaskForm):
+    ingredient_name = StringField("Ingredient", validators=[InputRequired("Please enter an Ingredient Name")])
+    expiry = IntegerField("Shelf Life (Days)", validators=[InputRequired("Please add an expiry")])
+    submit = SubmitField("Create Ingredient")
