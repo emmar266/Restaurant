@@ -41,7 +41,7 @@ mysql = MySQL(app)
 
 @app.before_request
 def logged_in():
-    g.user = session.get("username", None)
+    g.user = 'cherrylin20172027@gmail.com' #session.get("username", None)
     g.access = session.get("access_level", None)
 
 def login_required(view):
@@ -109,7 +109,7 @@ def page_not_found(error):
 
 @app.route("/", methods=["GET","POST"])
 def index():
-    return render_template("home.html", title = "Home")
+    return render_template("home.html")
 
 ##############################################################################################################################################
 ##############################################################################################################################################
@@ -654,7 +654,7 @@ def roster_request():
 
 # Customer profile
 @app.route("/customer_profile")
-@login_required
+#@login_required
 def customer_profile():
     #cur = mysql.connection.cursor()
     #cur.execute("SELECT * FROM customer WHERE email = %s", (g.user,))
@@ -734,11 +734,13 @@ def manager():
     cur.execute("SELECT * FROM sales_analytics")
     sales_analytics = cur.fetchone()
 
-    cur.execute("SELECT count(*) FROM user_queries where date(todays_date) = %s", (date,))
+    cur.execute("SELECT count(*) FROM user_queries where date(date_received) = %s", (date,))
     query_count = cur.fetchone()
 
     cur.execute("SELECT * FROM roster_requests WHERE status = 'Pending'")
     pending_requests = cur.fetchall()
+
+    print(pending_requests)
 
     cur.execute("SELECT * FROM roster_requests WHERE status = 'Approved' ORDER BY last_updated DESC")
     approved_requests = cur.fetchall()

@@ -1,6 +1,6 @@
 {% extends "layouts/base.html" %}
 
-{% block title %} Profile {% endblock %} 
+{% block title %} {{ title }} {% endblock %} 
 
 {% block stylesheets %}{% endblock stylesheets %}
 
@@ -25,6 +25,15 @@
                                                     <div class="col-sm-12 mb-4">
                                                         <div class="form-group">
                                                             {{ form.hidden_tag() }}
+                                                            
+                                                            <span class="mb-0 text-muted">
+                                                                <span class="text-danger">
+                                                                    {% for error in form.message.errors %}
+                                                                        {{ error }}
+                                                                    {% endfor %}
+                                                                </span>
+                                                            </span>
+
                                                             {{ form.message.label }}
                                                             {{ form.message(class="form-control", placeholder="Write a request") }}
                                                         </div>

@@ -1,2 +1,7 @@
-<p> staff profile </p>
+{% block title %}
+    {{ title }}
+{% endblock %}
+
+{{% block content %}}
 <a href="{{ url_for('roster_request') }}">Roster Request</a>
+{{% endblock content %}}
